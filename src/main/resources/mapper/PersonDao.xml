@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.syxfjr.springbatch.dao.PersonDao">
+
+    <resultMap type="com.syxfjr.springbatch.entity.Person" id="PersonMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="firstName" column="first_name" jdbcType="VARCHAR"/>
+        <result property="lastName" column="last_name" jdbcType="VARCHAR"/>
+        <result property="age" column="age" jdbcType="INTEGER"/>
+        <result property="recordTime" column="record_time" jdbcType="TIMESTAMP"/>
+        <result property="idCard" column="id_card" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="PersonMap">
+        select
+          id, first_name, last_name, age, record_time, id_card
+        from spring_batch.person
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="PersonMap">
+        select
+          id, first_name, last_name, age, record_time, id_card
+        from spring_batch.person
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="PersonMap">
+        select
+          id, first_name, last_name, age, record_time, id_card
+        from spring_batch.person
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="firstName != null and firstName != ''">
+                and first_name = #{firstName}
+            </if>
+            <if test="lastName != null and lastName != ''">
+                and last_name = #{lastName}
+            </if>
+            <if test="age != null">
+                and age = #{age}
+            </if>
+            <if test="recordTime != null">
+                and record_time = #{recordTime}
+            </if>
+            <if test="idCard != null and idCard != ''">
+                and id_card = #{idCard}
+            </if>
+        </where>
+    </select>
+    <select id="queryByIDCard" resultMap="PersonMap">
+        select
+          id, first_name, last_name, age, record_time, id_card
+        from spring_batch.person
+        where id_card = #{idCard}
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into spring_batch.person(first_name, last_name, age, record_time, id_card)
+        values (#{firstName}, #{lastName}, #{age}, #{recordTime}, #{idCard})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update spring_batch.person
+        <set>
+            <if test="firstName != null and firstName != ''">
+                first_name = #{firstName},
+            </if>
+            <if test="lastName != null and lastName != ''">
+                last_name = #{lastName},
+            </if>
+            <if test="age != null">
+                age = #{age},
+            </if>
+            <if test="recordTime != null">
+                record_time = #{recordTime},
+            </if>
+            <if test="idCard != null and idCard != ''">
+                id_card = #{idCard},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from spring_batch.person where id = #{id}
+    </delete>
+
+</mapper>
